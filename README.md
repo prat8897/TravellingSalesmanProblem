@@ -3,7 +3,7 @@
 
 ### An Exact Polynomial-Time Algorithm for the Euclidean Traveling Salesman Problem
 
-This repository contains the implementation and research paper for an exact algorithm solving the Euclidean Traveling Salesman Problem (TSP) with a time complexity of  O(n^4) . The algorithm utilizes combinatorial optimization techniques and efficient insertion strategies to systematically explore all possible tours while ensuring optimality.
+This repository contains the implementation and research paper for an exact algorithm solving the Euclidean Traveling Salesman Problem (TSP) with a time complexity of  O(n^7) . The algorithm utilizes combinatorial optimization techniques and efficient insertion strategies to systematically explore all possible tours while ensuring optimality.
 
 ### Overview
 
