@@ -29,3 +29,21 @@ Install the required packages using pip:
 ```
 pip install numpy matplotlib ortools pulp tqdm
 ```
+
+
+To solve .tsp instances using C++, compile `tsp_cycle.cpp` using:
+
+```
+g++ -std=c++17 -fopenmp -O2 -o tsp_solver tsp_cycle.cpp
+```
+
+To solve .tsp instances using CUDA gpu, compile `tsp_gpu.cu` using:
+```
+nvcc -G -g tsp_gpu.cu -o tsp_solver
+```
+
+and then run using:
+```
+./tsp_solver Tnm52.tsp
+```
+or any other .tsp file.
