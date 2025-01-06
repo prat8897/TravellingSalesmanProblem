@@ -75,12 +75,13 @@ std::vector<std::vector<double>> compute_distance_matrix(const std::vector<Point
 // Function to calculate total distance of a cycle
 double total_cycle_distance(const std::vector<int>& cycle, const std::vector<std::vector<double>>& distance_matrix) {
     double distance = 0.0;
-    int n = cycle.size();
+    int n = cycle.size() - 1;  // Unroll the distance from the last cycle to the first cycle
     for (int i = 0; i < n; ++i) {
         int from = cycle[i];
-        int to = cycle[(i + 1) % n];
+        int to = cycle[i + 1];
         distance += distance_matrix[from][to];
     }
+    distance += distance_matrix[cycle[n]][cycle[0]];
     return distance;
 }
 
@@ -96,9 +97,10 @@ std::vector<int> build_cycle_incremental(const std::vector<int>& current_cycle, 
         // Iterate over each remaining point r
         for (int r : remaining_points) {
             // Find the best insertion position for r based on delta distance
-            for (int i = 0; i < cycle.size(); ++i) {
+            const int n = cycle.size() - 1;  // Unroll the last calculus
+            for (int i = 0; i < n; ++i) {
                 int p = cycle[i];
-                int q = cycle[(i + 1) % cycle.size()];
+                int q = cycle[i + 1];
 
                 // Calculate the incremental distance
                 double delta = distance_matrix[p][r] + distance_matrix[r][q] - distance_matrix[p][q];
@@ -109,6 +111,18 @@ std::vector<int> build_cycle_incremental(const std::vector<int>& current_cycle, 
                     best_r = r;
                     best_insertion_position = i + 1;
                 }
+            }
+            int p = cycle[n - 1];
+            int q = cycle[0];
+
+            // Calculate the incremental distance
+            double delta = distance_matrix[p][r] + distance_matrix[r][q] - distance_matrix[p][q];
+
+            // Update if this is the best (smallest) delta found so far
+            if (delta < best_delta_distance) {
+                best_delta_distance = delta;
+                best_r = r;
+                best_insertion_position = 0;
             }
         }
 
@@ -137,9 +151,9 @@ std::vector<int> build_cycle_least_distance_updated(const std::vector<int>& star
         // Iterate over each remaining point r
         for (int r : remaining_points) {
             // Iterate over each possible insertion position for r
-            for (int i = 0; i < cycle.size(); ++i) {
+            const int n = cycle.size();
+            for (int i = 0; i < n; ++i) {
                 int p = cycle[i];
-                int q = cycle[(i + 1) % cycle.size()];
 
                 // Simulate inserting r between p and q
                 std::vector<int> temp_cycle = cycle;
@@ -182,7 +196,7 @@ struct CycleResult {
 };
 
 // Function to process a single edge
-CycleResult process_edge(const std::pair<int, int>& edge, int n, const std::vector<std::vector<double>>& distance_matrix) {
+CycleResult process_edge(const std::pair<int, int>& edge, const int n, const std::vector<std::vector<double>>& distance_matrix) {
     std::set<int> remaining;
     for (int i = 0; i < n; ++i) {
         remaining.insert(i);
@@ -207,7 +221,7 @@ CycleResult process_edge(const std::pair<int, int>& edge, int n, const std::vect
 }
 
 // Function to generate all possible edges (pairs of distinct points)
-std::vector<std::pair<int, int>> generate_edges(int n) {
+std::vector<std::pair<int, int>> generate_edges(const int n) {
     std::vector<std::pair<int, int>> edges;
     for (int i = 0; i < n; ++i) {
         for (int j = i + 1; j < n; ++j) {
@@ -256,11 +270,13 @@ int main(int argc, char* argv[]) {
         double local_best_distance = std::numeric_limits<double>::infinity();
         std::vector<int> local_best_cycle;
 
-        #pragma omp for schedule(dynamic)
+        #pragma omp for schedule(dynamic) nowait
+        #pragma omp shared(global_best_distance, global_best_cycle)
         for (int i = 0; i < edges.size(); ++i) {
             const auto& edge = edges[i];
             CycleResult result = process_edge(edge, n, distance_matrix);
             if (result.distance >= 0.0) {
+                // #pragma omp barrier
                 if (result.distance < local_best_distance) {
                     local_best_distance = result.distance;
                     local_best_cycle = result.cycle;
