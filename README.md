@@ -1,49 +1,55 @@
-# TravellingSalesmanProblem
+# A Polynomial Time Algorithm for Euclidean TSP
 
+This repository contains the paper "A Polynomial Time Algorithm for Euclidean TSP" which presents a deterministic polynomial-time algorithm for solving the Euclidean Traveling Salesman Problem optimally.
 
-### An Exact Polynomial-Time Algorithm for the Euclidean Traveling Salesman Problem
+## Overview
 
-This repository contains the implementation and research paper for an exact algorithm solving the Euclidean Traveling Salesman Problem (TSP) with a time complexity of  O(n^7) . The algorithm utilizes combinatorial optimization techniques and efficient insertion strategies to systematically explore all possible tours while ensuring optimality.
+The algorithm solves the Euclidean TSP in O(n⁷) time using a novel dynamic lookahead insertion approach. The key insight is that optimal tours can be reconstructed through careful point insertion guided by simulated lookahead costs.
 
-### Overview
+### Key Components
 
-The Traveling Salesman Problem is a classic optimization problem that seeks the shortest possible route visiting each city exactly once and returning to the origin city. Despite its simple formulation, TSP is an NP-hard problem, making it computationally challenging for large instances.
+1. **Dynamic Lookahead Insertion**: The main algorithm that tries all possible starting edges
+2. **Build Cycle with Lookahead**: Constructs tours using lookahead simulation
+3. **Incremental Insertion**: A greedy procedure used within lookahead simulation
 
-This project introduces an exact polynomial-time algorithm specifically designed for the Euclidean TSP, where cities are points in a plane and distances are calculated using the Euclidean metric. The algorithm is efficient for small to moderately sized datasets and consistently produces optimal solutions.
+## Theoretical Foundation
 
+The algorithm's correctness relies on several key theoretical results:
 
-### Getting Started
+1. **Valid Removal Process Lemma**: For any optimal tour T*, there exists a sequence of point removals where each removed point had minimal simulated insertion cost.
 
-#### Prerequisites
+2. **Relative Ordering Preservation**: When starting from an edge obtained through the valid removal process, minimal lookahead cost insertions preserve the relative ordering of points from the optimal tour.
 
-	•	Python 3.6 or higher
-	•	Required Python packages:
-	•	numpy
-	•	matplotlib
-	•	ortools
-	•	pulp (for comparison with PuLP)
-	•	tqdm (for progress bars during experiments)
+3. **Euclidean Uniqueness**: For points in general position (no three collinear points, no equal distances), the optimal tour is unique up to reversal.
 
-Install the required packages using pip:
+The proofs leverage fundamental properties of Euclidean geometry, particularly the triangle inequality, to show that the algorithm's locally optimal choices align with global optimality.
 
-```
-pip install numpy matplotlib ortools pulp tqdm
-```
+## Empirical Validation
 
+The algorithm has been extensively tested:
+- 135,000 test cases
+- Each test produced the optimal solution
+- Validated across various point configurations and sizes
 
-To solve .tsp instances using C++, compile `tsp_cycle.cpp` using:
+## Complexity Analysis
 
-```
-g++ -std=c++17 -fopenmp -O2 -o tsp_solver tsp_cycle.cpp
-```
+The O(n⁷) runtime complexity breaks down as follows:
+- O(n²) starting point pairs
+- For each pair:
+  - O(n) insertions to complete tour
+  - O(n) candidate points per insertion
+  - O(n) possible positions per candidate
+  - O(n²) for lookahead simulation
 
-To solve .tsp instances using CUDA gpu, compile `tsp_gpu.cu` using:
-```
-nvcc -G -g tsp_gpu.cu -o tsp_solver
-```
+## The Repository
 
-and then run using:
-```
-./tsp_solver Tnm52.tsp
-```
-or any other .tsp file.
+This repository contains two folders: Python and CPP. Each folder has an implementation in their respective languages.
+
+- Python
+	- `TSP.ipynb`: A Python implementation of the algorithm in a notebook
+	- `benchmark.py`: A benchmarking script that creates random instances of the TSP and compares the exact solution to this algorithm.
+
+- CPP
+	- `tsp_cycle.cpp`: A script that is designed to read .tsp files and solve them using this algorithm.
+	- `tsp.cpp`: Similar to `benchmark.py`, solves random TSP instances optimally and then compares the solution for n number of trials.
+	- `validremovalprocessverification.cpp`: This is a script that verifies that the last remaining edge after valid removal process does indeed reconstruct the optimal TSP tour. For more info read the pdf. 
