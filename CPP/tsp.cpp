@@ -158,7 +158,7 @@ std::vector<int> build_cycle_incremental(const std::vector<int>& current_cycle, 
                 int q = cycle[(i + 1) % cycle.size()];
 
                 // Calculate the incremental distance
-                double delta = distance_matrix[p][r] + distance_matrix[r][q] - distance_matrix[p][q];
+                double delta = distance_matrix[p][r] + distance_matrix[r][q];
 
                 // Update if this is the best (smallest) delta found so far
                 if (delta < best_delta_distance) {
@@ -319,8 +319,8 @@ double dynamic_lookahead_insertion(const std::vector<std::vector<double>>& dist)
 }
 
 int main() {
-    const int NUM_INSTANCES = 10000;
-    const int N = 20;  // Size of instances
+    const int NUM_INSTANCES = 100000;
+    const int N = 14;  // Size of instances
     
     int suboptimal_count = 0;
     std::cout << "Testing " << NUM_INSTANCES << " random instances of size " << N << std::endl;

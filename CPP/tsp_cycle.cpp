@@ -101,7 +101,7 @@ std::vector<int> build_cycle_incremental(const std::vector<int>& current_cycle, 
                 int q = cycle[(i + 1) % cycle.size()];
 
                 // Calculate the incremental distance
-                double delta = distance_matrix[p][r] + distance_matrix[r][q] - distance_matrix[p][q];
+                double delta = distance_matrix[p][r] + distance_matrix[r][q];
 
                 // Update if this is the best (smallest) delta found so far
                 if (delta < best_delta_distance) {

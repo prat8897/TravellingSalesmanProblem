@@ -116,7 +116,7 @@ def build_cycle_incremental(current_cycle, remaining_points, distance_matrix, se
                 q = cycle[(i + 1) % len(cycle)]
 
                 # Calculate the incremental distance
-                delta = (distance_matrix[p][r] + distance_matrix[r][q] - distance_matrix[p][q])
+                delta = (distance_matrix[p][r] + distance_matrix[r][q])
 
                 # Update if this is the best (smallest) delta found so far
                 if delta < best_delta_distance:
