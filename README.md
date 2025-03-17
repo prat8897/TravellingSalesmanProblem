@@ -52,4 +52,3 @@ This repository contains two folders: Python and CPP. Each folder has an impleme
 - CPP
 	- `tsp_cycle.cpp`: A script that is designed to read .tsp files and solve them using this algorithm.
 	- `tsp.cpp`: Similar to `benchmark.py`, solves random TSP instances optimally and then compares the solution for n number of trials.
-	- `validremovalprocessverification.cpp`: This is a script that verifies that the last remaining edge after valid removal process does indeed reconstruct the optimal TSP tour. For more info read the pdf. 
