@@ -320,7 +320,7 @@ double dynamic_lookahead_insertion(const std::vector<std::vector<double>>& dist)
 
 int main() {
     const int NUM_INSTANCES = 100000;
-    const int N = 14;  // Size of instances
+    const int N = 16;  // Size of instances
     
     int suboptimal_count = 0;
     std::cout << "Testing " << NUM_INSTANCES << " random instances of size " << N << std::endl;
